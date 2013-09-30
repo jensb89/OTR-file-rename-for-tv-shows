@@ -43,7 +43,7 @@ def queryEpisodeInfo(title):
 def searchDate(date, date_list): 
     date=datetime.strptime(date,"%y.%m.%d")
     for index, item in enumerate(date_list):
-        if item != u'\xa0':
+        if item != u'\xa0' and item != '':
             actualdate = datetime.strptime(item,"%d.%m.%Y")
             if actualdate.date() == date.date():
                 return index
@@ -51,10 +51,15 @@ def searchDate(date, date_list):
 def buildNewFileName(filename):
     showtitle,date,sender,extension,seriestime = getFileInfo(filename) 
     date_list,season,episode,eptitle = queryEpisodeInfo(showtitle)
+    print showtitle + ':' + date + '  ' + seriestime    
+    #print date
+    #print date_list
     idx = searchDate(date, date_list)
-    
-    print showtitle.replace('-',' ') + '.' + 'S' + season[idx] + 'E' + episode[idx] + '.' + eptitle[idx] + extension
-
+    if str(idx).isdigit(): 
+        print showtitle.replace('-',' ') + '.' + 'S' + season[idx] + 'E' + episode[idx] + '.' + eptitle[idx] + extension
+    else:
+        print 'Keine Uebereinstimmung'
+        
 if __name__ == '__main__':
     import sys
     if len(sys.argv) == 2:

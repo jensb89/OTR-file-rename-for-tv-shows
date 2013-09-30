@@ -8,20 +8,22 @@ Get all information about a tv show from fernsehserien.de
 
 from bs4 import BeautifulSoup
 from urllib import urlopen
- 
+from types import * 
 
 def getWebPage(seriesname):
     print 'Trying to get website information...please wait...'
     webpage = urlopen('http://www.fernsehserien.de/'+seriesname+'/episodenguide').read()
     print 'Website successfully scraped'
-    soup = BeautifulSoup(webpage)
+    soup = BeautifulSoup(webpage, "html.parser")
+    #print soup.prettify()
     return soup
     
 
 def getTitlesGerman(soupobj):
     episodetitlesger = soupobj.select("td.episodenliste-titel")
     for i in episodetitlesger:
-        i.find('span').decompose()
+        if type(i.find('span')) is not NoneType:
+            i.find('span').decompose()
         
     return [x.text for x in episodetitlesger]
     
@@ -39,7 +41,8 @@ def getDate(soupobj):
 def getDateGerman(soupobj):
     episodedate = soupobj.select("td.episodenliste-ea")
     for i in episodedate:
-        i.find('span').decompose()
+        if type(i.find('span')) is not NoneType:
+            i.find('span').decompose()
     
     return [x.text for x in episodedate]
     
@@ -64,6 +67,7 @@ def main(seriesname):
     e = getEpisodeNumber(soup)
     d = getDateGerman(soup)
     t = getTitlesGerman(soup)
+    print len(getTitles(soup))
     
     for i in range(0,getCountEpisode(soup)):
         print 'S' + s[i] + '.' + 'E'+ e[i] + ' : ' + t[i] + '( ' + d[i] + ' )'         
