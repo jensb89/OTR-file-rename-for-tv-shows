@@ -3,16 +3,20 @@
 Extract all information from the (decoded) otrkey file name (onlinetvrecorder.com)
 and use the website fernsehserien.de to rename the file with the episode and season info 
 
-## Install 
+# Install #
+
 You need Beautiful Soup 4 installed. 
 
-# Windows:
+## Windows: ##
+
 Download easy_setup (https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py)
 ````
 $ python ez_setup.oy
 $ easy_install BeautifulSoup4
+````
 
-## USAGE 
+# USAGE #
+
 ````
 $ python otr_rename.py otrkey-filename
 ````
