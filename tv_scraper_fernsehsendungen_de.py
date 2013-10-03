@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 Get all information about a tv show from fernsehserien.de
 (seasons, episodes and dates (german) )
@@ -9,6 +9,38 @@ Get all information about a tv show from fernsehserien.de
 from bs4 import BeautifulSoup
 from urllib import urlopen
 from types import * 
+import codecs, sys
+
+""" 
+Deal with Windows Output/ Codecs (see http://stackoverflow.com/questions/5419/python-unicode-and-the-windows-console for more info)
+"""
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+#print sys.getdefaultencoding()
+
+if sys.platform == 'win32':
+    try:
+        import win32console 
+    except:
+        print "Python Win32 Extensions module is required.\n You can download it from https://sourceforge.net/projects/pywin32/ (x86 and x64 builds are available)\n"
+        exit(-1)
+    # win32console implementation  of SetConsoleCP does not return a value
+    # CP_UTF8 = 65001
+    win32console.SetConsoleCP(65001)
+    if (win32console.GetConsoleCP() != 65001):
+        raise Exception ("Cannot set console codepage to 65001 (UTF-8)")
+    win32console.SetConsoleOutputCP(65001)
+    if (win32console.GetConsoleOutputCP() != 65001):
+        raise Exception ("Cannot set console output codepage to 65001 (UTF-8)")
+
+#import sys, codecs
+sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+print "This is an Е乂αmp١ȅ testing Unicode support using Arabic, Latin, Cyrillic, Greek, Hebrew and CJK code points.\n"
+"""
+//END
+"""
 
 def getWebPage(seriesname):
     print 'Trying to get website information...please wait...'
