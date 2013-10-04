@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 OTR file rename for tv-shows
@@ -8,6 +9,7 @@ and use the website fernsehserien.de to rename the file with the episode and sea
 """
 import re
 import tv_scraper_fernsehsendungen_de as scraper
+import tv_scraper_fernsehsendungen_de_sendetermine as scraper_timetable
 import os
 from datetime import datetime
 
@@ -24,18 +26,21 @@ def getFileInfo(filename):
     
     return title,seriesdate,sender,extension,seriestime
 
-def queryEpisodeInfo(title):
+def queryEpisodeInfo(title, lang):
     serieslinks = {'The Big Bang Theory' : 'the-big-bang-theory',
-                   'The-Simpsons' : 'die-simpsons'} #to be continued...
+                   'The-Simpsons' : 'die-simpsons'} #to be continued... 
 
     if serieslinks.has_key(title):
         title = serieslinks(title)
-        
+    
     page = scraper.getWebPage(title)
-    d = scraper.getDateGerman(page)
+    if lang == 'de':
+        d = scraper.getDateGerman(page)
+        t = scraper.getTitlesGerman(page)
+        
     s = scraper.getSeasonNumber(page)
     e = scraper.getEpisodeNumber(page)
-    t = scraper.getTitlesGerman(page)
+    
     
     return d,s,e,t
 
@@ -48,23 +53,45 @@ def searchDate(date, date_list):
             if actualdate.date() == date.date():
                 return index
 
+
 def buildNewFileName(filename):
-    showtitle,date,sender,extension,seriestime = getFileInfo(filename) 
-    date_list,season,episode,eptitle = queryEpisodeInfo(showtitle)
-    print showtitle + ':' + date + '  ' + seriestime    
+    showtitle,date,sender,extension,seriestime = getFileInfo(filename)
+    if sender[:2] != 'us':
+        lang='de'
+    else:
+        lang='us'
+        
+    date_list,season,episode,eptitle = queryEpisodeInfo(showtitle, lang)
+    #print showtitle + ':' + date + '  ' + seriestime    
     #print date
     #print date_list
+    
     idx = searchDate(date, date_list)
     if str(idx).isdigit(): 
-        print showtitle.replace('-',' ') + '.' + 'S' + season[idx] + 'E' + episode[idx] + '.' + eptitle[idx] + extension
+        newfilename = showtitle.replace('-',' ') + '.' + 'S' + season[idx] + 'E' + episode[idx] + '.' + eptitle[idx] + extension
     else:
-        print 'Keine Uebereinstimmung'
+        if lang == 'de':
+            date_list,season,episode,eptitle,time_list = scraper_timetable.getSeriesTimeTable(showtitle, sender)
+            idx = searchDate(date, date_list)
+            if str(idx).isdigit():
+                newfilename = showtitle.replace('-',' ') + '.' + 'S' + season[idx] + 'E' + episode[idx] + '.' + eptitle[idx] + extension 
+            else:
+                newfilename = False
+                print 'Keine Uebereinstimmung'
+        else:
+            newfilename = False
+            print 'Keine Uebereinstimmung'
+    
+    return newfilename
+        
         
 if __name__ == '__main__':
     import sys
     if len(sys.argv) == 2:
         filename = sys.argv[1]
-        buildNewFileName(filename)
+        newfilename = buildNewFileName(filename)
+        if newfilename != False:
+            print newfilename
     else:
         print 'Usage: ' + sys.argv[0] + ' filename'
 

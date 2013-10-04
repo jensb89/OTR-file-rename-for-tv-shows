@@ -1,4 +1,5 @@
-﻿# -*- coding: utf-8 -*-
+﻿#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 Get all information about a tv show from fernsehserien.de
 (seasons, episodes and dates (german) )
@@ -37,7 +38,7 @@ if sys.platform == 'win32':
 #import sys, codecs
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 sys.stderr = codecs.getwriter('utf8')(sys.stderr)
-print "This is an Е乂αmp١ȅ testing Unicode support using Arabic, Latin, Cyrillic, Greek, Hebrew and CJK code points.\n"
+#print "This is an Е乂αmp١ȅ testing Unicode support using Arabic, Latin, Cyrillic, Greek, Hebrew and CJK code points.\n"
 """
 //END
 """
@@ -99,7 +100,7 @@ def main(seriesname):
     e = getEpisodeNumber(soup)
     d = getDateGerman(soup)
     t = getTitlesGerman(soup)
-    print len(getTitles(soup))
+    #print len(getTitles(soup))
     
     for i in range(0,getCountEpisode(soup)):
         print 'S' + s[i] + '.' + 'E'+ e[i] + ' : ' + t[i] + '( ' + d[i] + ' )'         
