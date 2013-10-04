@@ -28,15 +28,19 @@ def getFileInfo(filename):
 
 def queryEpisodeInfo(title, lang):
     serieslinks = {'The Big Bang Theory' : 'the-big-bang-theory',
-                   'The-Simpsons' : 'die-simpsons'} #to be continued... 
+                   'The-Simpsons' : 'die-simpsons',
+                   'Marvel-s-Agents-of-S-H-I-E-L-D':'the-agents-of-s-h-i-e-l-d'} #to be continued... 
 
     if serieslinks.has_key(title):
-        title = serieslinks(title)
+        title = serieslinks[title]
     
     page = scraper.getWebPage(title)
     if lang == 'de':
         d = scraper.getDateGerman(page)
         t = scraper.getTitlesGerman(page)
+    else:
+        d = scraper.getDate(page)
+        t = scraper.getTitles(page)
         
     s = scraper.getSeasonNumber(page)
     e = scraper.getEpisodeNumber(page)

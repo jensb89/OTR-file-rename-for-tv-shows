@@ -68,7 +68,7 @@ def getTitles(soupobj):
     
 def getDate(soupobj):
     episodedate = soupobj.select("td.episodenliste-oea")
-    return [x.text for x in episodedate]
+    return [x.text.replace('\n','') for x in episodedate]
     
     
 def getDateGerman(soupobj):
