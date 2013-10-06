@@ -59,20 +59,33 @@ def searchDate(date, date_list):
                 return index
 
 def checkFollowingDateEntry(date,stime,date_list,time_list,idx):
+    tc = time.strptime(date+' '+stime,"%y.%m.%d %H-%M")  #Time from filename 
+    
     actual=time.strptime(date_list[idx]+' '+time_list[idx],"%d.%m.%Y %H:%M")
-
-    if idx < len(date_list)-1:
+    
+    if idx < len(date_list)-2:
         after=time.strptime(date_list[idx+1]+' '+time_list[idx+1],"%d.%m.%Y %H:%M")
     else:
         return idx
     
-    tc = time.strptime(date+' '+stime,"%y.%m.%d %H-%M")  #Time from filename   
-    
-    if abs(time.mktime(actual)-time.mktime(tc)) > abs(time.mktime(actual)-time.mktime(after)):
-        idx = idx +1
-        checkFollowingDateEntry(date,stime,date_list,time_list,idx)
+    trynext = True
+    while trynext:
+
+        diffactual= abs(time.mktime(actual)-time.mktime(tc))
+        diffnext= abs(time.mktime(after)-time.mktime(tc))
         
-    return idx     
+        if diffactual > diffnext and idx < len(date_list)-2:
+            idx=idx+1
+            actual = time.strptime(date_list[idx]+' '+time_list[idx],"%d.%m.%Y %H:%M")
+            after = time.strptime(date_list[idx+1]+' '+time_list[idx+1],"%d.%m.%Y %H:%M")  
+        elif diffactual > diffnext and idx == len(date_list)-2:
+            idx=idx+1
+            trynext = False
+        else:
+            trynext = False
+            
+    return idx
+           
     
 
 def buildNewFileName(filename):
@@ -98,7 +111,7 @@ def buildNewFileName(filename):
             else:
                 idx = searchDate(date, date_list)
             if str(idx).isdigit():
-                idx = checkFollowingDateEntry(date,seriestime,date_list,time_list,idx)
+                idx = checkFollowingDateEntry(date,seriestime,date_list,time_list,idx-1 if idx>0 else idx)
                 newfilename = showtitle.replace('-',' ') + '.' + 'S' + season[idx] + 'E' + episode[idx] + '.' + eptitle[idx] + extension
             else:
                 newfilename = False
