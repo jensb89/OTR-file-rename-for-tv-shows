@@ -12,6 +12,7 @@ import tv_scraper_fernsehsendungen_de as scraper
 import tv_scraper_fernsehsendungen_de_sendetermine as scraper_timetable
 import os
 from datetime import datetime
+import time
 
 def getFileInfo(filename):
     extension = os.path.splitext(filename)[1]
@@ -57,6 +58,22 @@ def searchDate(date, date_list):
             if actualdate.date() == date.date():
                 return index
 
+def checkFollowingDateEntry(date,stime,date_list,time_list,idx):
+    actual=time.strptime(date_list[idx]+' '+time_list[idx],"%d.%m.%Y %H:%M")
+
+    if idx < len(date_list)-1:
+        after=time.strptime(date_list[idx+1]+' '+time_list[idx+1],"%d.%m.%Y %H:%M")
+    else:
+        return idx
+    
+    tc = time.strptime(date+' '+stime,"%y.%m.%d %H-%M")  #Time from filename   
+    
+    if abs(time.mktime(actual)-time.mktime(tc)) > abs(time.mktime(actual)-time.mktime(after)):
+        idx = idx +1
+        checkFollowingDateEntry(date,stime,date_list,time_list,idx)
+        
+    return idx     
+    
 
 def buildNewFileName(filename):
     showtitle,date,sender,extension,seriestime = getFileInfo(filename)
@@ -76,9 +93,13 @@ def buildNewFileName(filename):
     else:
         if lang == 'de':
             date_list,season,episode,eptitle,time_list = scraper_timetable.getSeriesTimeTable(showtitle, sender)
-            idx = searchDate(date, date_list)
+            if not(date_list[:]):
+                idx = False
+            else:
+                idx = searchDate(date, date_list)
             if str(idx).isdigit():
-                newfilename = showtitle.replace('-',' ') + '.' + 'S' + season[idx] + 'E' + episode[idx] + '.' + eptitle[idx] + extension 
+                idx = checkFollowingDateEntry(date,seriestime,date_list,time_list,idx)
+                newfilename = showtitle.replace('-',' ') + '.' + 'S' + season[idx] + 'E' + episode[idx] + '.' + eptitle[idx] + extension
             else:
                 newfilename = False
                 print 'Keine Uebereinstimmung'
