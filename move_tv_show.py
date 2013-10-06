@@ -33,11 +33,13 @@ def copysort(filename):
     log = open('log.txt','a')
     newfilename = otr_rename.buildNewFileName(filename)
     if newfilename != False:
-        move(filename,title+'/'+newfilename)
-        log.write(filename + ' was copied to ' + title+'/'+newfilename + '\n')
+        newpath = title+'/'+newfilename
     else:
-        move(filename,title+'/'+filename)
-        log.write(filename + ' was copied to ' + title+'/'+filename + '\n')
+        newpath = title+'/'+filename
+    
+    if not(os.path.isfile(newpath)):
+        move(filename,newpath)
+        log.write(filename + ' was copied to ' + newpath + '\n')		
     
     log.close()
 
