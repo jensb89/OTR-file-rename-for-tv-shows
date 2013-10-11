@@ -26,15 +26,9 @@ def getFileInfo(filename):
     sender = m.group(4)
     
     return title,seriesdate,sender,extension,seriestime
+    
 
 def queryEpisodeInfo(title, lang):
-    serieslinks = {'The Big Bang Theory' : 'the-big-bang-theory',
-                   'The-Simpsons' : 'die-simpsons',
-                   'Marvel-s-Agents-of-S-H-I-E-L-D':'the-agents-of-s-h-i-e-l-d'} #to be continued... 
-
-    if serieslinks.has_key(title):
-        title = serieslinks[title]
-    
     page = scraper.getWebPage(title)
     if lang == 'de':
         d = scraper.getDateGerman(page)
@@ -57,6 +51,7 @@ def searchDate(date, date_list):
             actualdate = datetime.strptime(item,"%d.%m.%Y")
             if actualdate.date() == date.date():
                 return index
+                
 
 def checkFollowingDateEntry(date,stime,date_list,time_list,idx):
     tc = time.strptime(date+' '+stime,"%y.%m.%d %H-%M")  #Time from filename 

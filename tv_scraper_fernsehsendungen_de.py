@@ -11,6 +11,9 @@ from bs4 import BeautifulSoup
 from urllib import urlopen
 from types import * 
 import codecs, sys
+import os
+import time
+import fernsehserien_de_links as tlinks
 
 """ 
 Deal with Windows Output/ Codecs (see http://stackoverflow.com/questions/5419/python-unicode-and-the-windows-console for more info)
@@ -45,7 +48,25 @@ sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
 def getWebPage(seriesname):
     print 'Trying to get website information...please wait...'
-    webpage = urlopen('http://www.fernsehserien.de/'+seriesname+'/episodenguide').read()
+    cache = seriesname.replace('-',' ') + '/' + 'eplist.dat'
+    if os.path.isfile(cache) and (time.time() - os.path.getmtime(cache)) < 43200:
+        print "Use local file..."        
+        webpage = urlopen(cache)
+    else:
+        if tlinks.serieslinks.has_key(seriesname):
+            title = tlinks.serieslinks[title]
+        else:
+            title = seriesname
+            
+        webpage = urlopen('http://www.fernsehserien.de/'+title+'/episodenguide').read()
+        
+        if not(os.path.isdir(seriesname.replace('-',' '))):
+            os.mkdir(seriesname.replace('-',' '))
+            
+        f = open(cache,'w')
+        f.write(webpage)
+        f.close()
+        
     print 'Website successfully scraped'
     soup = BeautifulSoup(webpage, "html.parser")
     #print soup.prettify()
@@ -68,7 +89,7 @@ def getTitles(soupobj):
     
 def getDate(soupobj):
     episodedate = soupobj.select("td.episodenliste-oea")
-    return [x.text.replace('\n','') for x in episodedate]
+    return [x.text.rstrip('\r\n') for x in episodedate]
     
     
 def getDateGerman(soupobj):

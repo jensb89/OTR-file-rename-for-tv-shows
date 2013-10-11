@@ -13,29 +13,46 @@ from math import fmod
 import re
 from types import * 
 import codecs
-
+import os
+import fernsehserien_de_links as tlinks
+import time
 
 def getSeriesTimeTable(seriesname, sender):
     print 'Trying to get timetable information...please wait...'
-
-    senderlist = {'pro7' : 'ProSieben', 'rtlnitro' : 'rtl-nitro',
-                  'pro7max' : 'ProSiebenMaxx', 'rtl':'rtl', 'vox':'vox',
-                  'rtl2':'rtl2'}
                   
-    if senderlist.has_key(sender):
-        senderlink = senderlist[sender]
+    if tlinks.senderlist.has_key(sender):
+        senderlink = tlinks.senderlist[sender]
     else:
         print 'Link zu Sender ' + sender +' nicht gefunden'
         return 0
+    
+    cache = seriesname.replace('-',' ') + '/' + 'ttlist.dat'
+    if os.path.isfile(cache) and (time.time() - os.path.getmtime(cache)) < 43200:
+        print "Use local file..."        
+        webpage = urlopen(cache)
+    else:
+        if tlinks.serieslinks.has_key(seriesname):
+            title = tlinks.serieslinks[title]
+        else:
+            title = seriesname
+            
+        webpage = urlopen('http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1#jahr-2013').read()
         
-    webpage = urlopen('http://www.fernsehserien.de/'+seriesname+'/sendetermine/'+senderlink+'/-1#jahr-2013').read()
+        if not(os.path.isdir(seriesname.replace('-',' '))):
+            os.mkdir(seriesname.replace('-',' '))
+            
+        f = open(cache,'w')
+        f.write(webpage)
+        f.close()   
+        
+    
     print 'Website successfully scraped'
     #soup = BeautifulSoup(fernsehserien_testdata.gethtmlo(), "html.parser")
     soup = BeautifulSoup(webpage, "html.parser")
     tddata = soup.select("tr")
 
-    date = []
-    time = []
+    epdate = []
+    eptime = []
     season = []
     episode = []
     title =[]
@@ -45,13 +62,13 @@ def getSeriesTimeTable(seriesname, sender):
             #print item.text
             m = re.search("([0-9]{2}\.[0-9]{2}\.[0-9]{4})([0-9]{2}\:[0-9]{2}).*([0-9]{1})\.([0-9]{2})(.*)", item.text)
             if type(m) is not NoneType:            
-                date.append(m.group(1))
-                time.append(m.group(2))
+                epdate.append(m.group(1))
+                eptime.append(m.group(2))
                 season.append(m.group(3))
                 episode.append(m.group(4))
                 title.append(m.group(5))
                 
-    return (date, season, episode, title, time)    
+    return (epdate, season, episode, title, eptime)    
     
 def main(seriesname, sender):
     d,s,e,t,time = getSeriesTimeTable(seriesname, sender)
