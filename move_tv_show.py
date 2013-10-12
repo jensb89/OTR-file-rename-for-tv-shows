@@ -33,6 +33,7 @@ def copysort(filename):
     log = open('log.txt','a')
     newfilename = otr_rename.buildNewFileName(filename)
     if newfilename != False:
+        newfilename = "".join(i for i in newfilename if i not in r'\/:*?"<>|') 
         newpath = title+'/'+newfilename
     else:
         newpath = title+'/'+filename
