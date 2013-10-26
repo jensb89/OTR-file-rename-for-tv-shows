@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Get all information about a tv show from fernsehserien.de
@@ -54,7 +54,7 @@ def getWebPage(seriesname):
         webpage = urlopen(cache)
     else:
         if tlinks.serieslinks.has_key(seriesname):
-            title = tlinks.serieslinks[title]
+            title = tlinks.serieslinks[seriesname]
         else:
             title = seriesname
             
