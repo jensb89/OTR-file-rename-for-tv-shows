@@ -32,11 +32,11 @@ def getSeriesTimeTable(seriesname, sender):
         webpage = urlopen(cache)
     else:
         if tlinks.serieslinks.has_key(seriesname):
-            title = tlinks.serieslinks[title]
+            title = tlinks.serieslinks[seriesname]
         else:
             title = seriesname
             
-        webpage = urlopen('http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1#jahr-2013').read()
+        webpage = urlopen('http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1#jahr-2014').read()
         
         if not(os.path.isdir(seriesname.replace('-',' '))):
             os.mkdir(seriesname.replace('-',' '))
@@ -60,7 +60,7 @@ def getSeriesTimeTable(seriesname, sender):
     for index, item in enumerate(tddata):
         if fmod(index,2) != 0 and index>0:
             #print item.text
-            m = re.search("([0-9]{2}\.[0-9]{2}\.[0-9]{4})([0-9]{2}\:[0-9]{2}).*([0-9]{1})\.([0-9]{2})(.*)", item.text)
+            m = re.search("([0-9]{2}\.[0-9]{2}\.[0-9]{4})([0-9]{2}\:[0-9]{2}).*[0-9]{1}([0-9]{1,2})\.([0-9]{2})(.*)", item.text)
             if type(m) is not NoneType:            
                 epdate.append(m.group(1))
                 eptime.append(m.group(2))
