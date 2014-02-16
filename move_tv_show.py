@@ -10,6 +10,7 @@ and use the website fernsehserien.de to rename the file with the episode and sea
 import re
 import os
 from shutil import move
+from time import localtime
 import otr_rename
 
 def getFileInfo(filename):
@@ -31,6 +32,12 @@ def copysort(filename):
        os.mkdir(title)
    
     log = open('log.txt','a')
+    lt = localtime()
+    jahr, monat, tag, stunde, minute = lt[0:5]
+    log.write(str(jahr)+'-'+ str(monat) +'-'+ str(tag) +' '+ str(stunde) +':'+ str(minute) +' : ')
+    #log.write(strftime("%Y-%m-%d %H:%I"))
+    log.write("input  " + filename + "\n")
+
     newfilename = otr_rename.buildNewFileName(filename)
     if newfilename != False:
         newfilename = "".join(i for i in newfilename if i not in r'\/:*?"<>|') 
@@ -40,7 +47,9 @@ def copysort(filename):
     
     if not(os.path.isfile(newpath)):
         move(filename,newpath)
-        log.write(filename + ' was copied to ' + newpath + '\n')		
+        log.write(str(jahr)+'-'+ str(monat) +'-'+ str(tag) +' '+ str(stunde) +':'+ str(minute) +' : ')
+        log.write("output " + newpath + "\n\n")
+        #log.write(filename + ' was copied to ' + newpath + '\n')		
     
     log.close()
 

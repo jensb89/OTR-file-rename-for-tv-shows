@@ -96,7 +96,7 @@ def buildNewFileName(filename):
     #print date_list
     
     idx = searchDate(date, date_list)
-    if str(idx).isdigit():
+    if lang== 'us' and str(idx).isdigit():
         newfilename = showtitle.replace('-',' ') + '.' + 'S' + season[idx] + 'E' + episode[idx] + '.' + eptitle[idx] + extension
     else:
         if lang == 'de':
