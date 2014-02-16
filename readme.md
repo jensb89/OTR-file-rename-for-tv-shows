@@ -1,11 +1,11 @@
-**OTR file rename for tv-shows**
+#OTR file rename for tv-shows
 
 Extract all information from the (decoded) otrkey file name (onlinetvrecorder.com)
 and use the website fernsehserien.de to rename the file with the episode and season info 
 
-# Install #
+## Install ##
 
-## Prerequisites ##
+### Prerequisites ###
 
 You need Python and the extension Beautiful Soup 4 installed. 
 
@@ -17,7 +17,7 @@ $ python ez_setup.oy
 $ easy_install BeautifulSoup4
 ````
 
-# USAGE #
+## USAGE ##
 Just get information
 _______________________
 ````
@@ -41,8 +41,18 @@ Also a log.txt file will be created
 
 Example output:
 ````
-Marvel_s_Agents_of_S_H_I_E_L_D___0-8-4_13.10.01_20-00_uswabc_61_TVOON_DE.avi was copied to Marvel s Agents of S H I E L D/Marvel s Agents of S H I E L D.S1E02.0–8-4.avi
-Sleepy_Hollow__For_the_Triumph_of_Evil_13.09.30_21-00_uswnyw_60_TVOON_DE.avi was copied to Sleepy Hollow/Sleepy Hollow.S1E03.For The Triumph Of Evil.avi
-Supernatural_13.10.05_01-15_pro7_55_TVOON_DE.avi was copied to Supernatural/Supernatural.S7E16.Von schwarzen Schwänen.avi
-Supernatural_13.10.05_02-10_pro7_45_TVOON_DE.avi was copied to Supernatural/Supernatural.S7E17.Identitätsverlust.avi
+2014-1-26 23:34 : input  The_Blacklist_14.01.21_20-15_rtl_55_TVOON_DE.avi
+2014-1-26 23:34 : output The Blacklist/The Blacklist.S1E01.Raymond Reddingtons schwarze Liste.avi
+
+2014-1-26 23:34 : input  The_Blacklist_14.01.21_21-10_rtl_55_TVOON_DE.avi
+2014-1-26 23:34 : output The Blacklist/The Blacklist.S1E02.Der Freelancer (Nr. 145).avi
+
+2014-1-30 19:51 : input  Die_Simpsons_14.01.27_20-15_pro7_30_TVOON_DE.avi
+2014-1-30 19:51 : output Die Simpsons/Die Simpsons.S24E15.Blauauge sei wachsam.avi
+
+2014-1-30 19:51 : input  Revolution__Happy_Endings_14.01.29_20-00_uswnbc_60_TVOON_DE.avi
+2014-1-30 19:51 : output Revolution/Revolution.S2E13.Happy Endings.avi
+
+2014-1-30 19:51 : input  The_Originals__Dance_Back_From_the_Grave_14.01.28_20-00_uswpix_60_TVOON_DE.avi
+2014-1-30 19:51 : output The Originals/The Originals.S1E12.Dance Back From The Dead.avi
 ````
