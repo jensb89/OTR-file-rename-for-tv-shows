@@ -4,12 +4,6 @@
 from PyQt4 import QtCore, QtGui
 import sys
 import os
-import GUI.otrrenameneugui
+import GUI.otr_main
 
-
-app = QtGui.QApplication(sys.argv)
-Form = QtGui.QWidget()
-ui = GUI.otrrenameneugui.Ui_Form()
-ui.setupUi(Form)
-Form.show()
-sys.exit(app.exec_())
+GUI.otr_main.main();
