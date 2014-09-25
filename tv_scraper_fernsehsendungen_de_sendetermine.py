@@ -60,13 +60,13 @@ def getSeriesTimeTable(seriesname, sender):
     for index, item in enumerate(tddata):
         if fmod(index,2) != 0 and index>0:
             #print item.text
-            m = re.search("([0-9]{2}\.[0-9]{2}\.[0-9]{4})([0-9]{2}\:[0-9]{2}).*?[0-9]{1}([0-9]{1,2})\.([0-9]{2})(.*)", item.text)
+            m = re.search("(\d{2}\.\d{2}\.\d{4}).*?(\d{2}:\d{2}).*?>(\d{1,3})<.*?>(\d{1,2}).*?>(\d{1,2}).*?>([^<]+)", str(item))
             if type(m) is not NoneType:            
                 epdate.append(m.group(1))
                 eptime.append(m.group(2))
-                season.append(m.group(3))
-                episode.append(m.group(4))
-                title.append(m.group(5))
+                season.append(m.group(4))
+                episode.append(m.group(5))
+                title.append(m.group(6))
                 
     return (epdate, season, episode, title, eptime)    
     
