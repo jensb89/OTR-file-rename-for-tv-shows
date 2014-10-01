@@ -127,7 +127,7 @@ class OTR_Rename(object):
         
         actual=time.strptime(date_list[idx]+' '+time_list[idx],"%d.%m.%Y %H:%M")
         
-        if idx < len(date_list)-2:
+        if idx <= len(date_list)-2:
             after=time.strptime(date_list[idx+1]+' '+time_list[idx+1],"%d.%m.%Y %H:%M")
         else:
             return idx
@@ -153,13 +153,16 @@ class OTR_Rename(object):
 
 class Fernsehserien_de_Scraper(object):
     # Parse the EpisodeGuide Page from Fernsehserien.de - get back all episodes as a list
+
+    CACHE_FOLDER = '.cache'
+
     def __init__(self, show):
         self.name = show #e.g. 'Die Simpsons'
 
     ######  DOWNLOADING WEBPAGE : Fernsehserien - EpisodeGuide ########
     def downloadWebpage(self):
         print 'Trying to get website information...please wait...'
-        cache = self.name + '/' + 'eplist.dat'
+        cache = Fernsehserien_de_Scraper.CACHE_FOLDER + '/' + self.name + '_' + 'eplist.dat'
         if os.path.isfile(cache) and (time.time() - os.path.getmtime(cache)) < 43200:
             print "Use local file..."        
             webpage = urlopen(cache)
@@ -254,7 +257,7 @@ class Fernsehserien_de_Scraper(object):
             print 'Link zu Sender ' + sender +' nicht gefunden'
             return 0
         
-        cache = self.name.replace('-',' ') + '/' + 'ttlist.dat'
+        cache = Fernsehserien_de_Scraper.CACHE_FOLDER + '/' + self.name + '_ttlist.dat'
         if os.path.isfile(cache) and (time.time() - os.path.getmtime(cache)) < 43200:
             print "Use local file..."        
             webpage = urlopen(cache)
