@@ -58,7 +58,7 @@ def checkFollowingDateEntry(date,stime,date_list,time_list,idx):
     
     actual=time.strptime(date_list[idx]+' '+time_list[idx],"%d.%m.%Y %H:%M")
     
-    if idx < len(date_list)-2:
+    if idx <= len(date_list)-2:
         after=time.strptime(date_list[idx+1]+' '+time_list[idx+1],"%d.%m.%Y %H:%M")
     else:
         return idx
