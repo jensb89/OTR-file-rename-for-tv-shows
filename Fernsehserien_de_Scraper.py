@@ -13,7 +13,8 @@ from math import fmod
 import re
 from types import * 
 import os
-import fernsehserien_de_links as tlinks
+from tv_shows_db import serieslinks
+from tv_stations_db import senderlinks
 import time
 
 
@@ -33,8 +34,8 @@ class Fernsehserien_de_Scraper(object):
             print "Use local file..."        
             webpage = urlopen(cache)
         else:
-            if tlinks.serieslinks.has_key(self.name):
-                title = tlinks.serieslinks[self.name.replace(' ','-')]
+            if serieslinks.has_key(self.name):
+                title = serieslinks[self.name.replace(' ','-')]
             else:
                 title = self.name.replace(' ','-')
                 
@@ -117,7 +118,7 @@ class Fernsehserien_de_Scraper(object):
     def getTimeTable(self, sender):
         print 'Trying to get timetable information...please wait...'
                       
-        if tlinks.senderlist.has_key(sender):
+        if senderlinks.has_key(sender):
             senderlink = tlinks.senderlist[sender]
         else:
             print 'Link zu Sender ' + sender +' nicht gefunden'
@@ -128,8 +129,8 @@ class Fernsehserien_de_Scraper(object):
             print "Use local file..."        
             webpage = urlopen(cache)
         else:
-            if tlinks.serieslinks.has_key(self.name.replace(' ','-')):
-                title = tlinks.serieslinks[self.name.replace(' ','-')]
+            if serieslinks.has_key(self.name.replace(' ','-')):
+                title = serieslinks[self.name.replace(' ','-')]
             else:
                 title = self.name.replace(' ','-')
                 
