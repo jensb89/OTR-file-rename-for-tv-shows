@@ -7,4 +7,5 @@ senderlinks = {'pro7' : 'ProSieben',
               'rtl2' : 'rtl2',
               'sat1' : 'sat1',
               'zdfneo' : 'zdf_neo',
-              'zdf' : 'zdf'}
+              'zdf' : 'zdf',
+              'mdr' : 'mdr'}
