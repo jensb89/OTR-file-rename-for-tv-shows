@@ -43,6 +43,9 @@ class Fernsehserien_de_Scraper(object):
             
             if not(os.path.isdir(self.name.replace('-',' '))):
                 os.mkdir(self.name.replace('-',' '))
+
+            if not(os.path.isdir(Fernsehserien_de_Scraper.CACHE_FOLDER)):
+                os.mkdir(Fernsehserien_de_Scraper.CACHE_FOLDER)
                 
             f = open(cache,'w')
             f.write(webpage)
@@ -119,7 +122,7 @@ class Fernsehserien_de_Scraper(object):
         print 'Trying to get timetable information...please wait...'
                       
         if senderlinks.has_key(sender):
-            senderlink = tlinks.senderlist[sender]
+            senderlink = senderlinks[sender]
         else:
             print 'Link zu Sender ' + sender +' nicht gefunden'
             return 0
