@@ -141,3 +141,15 @@ class OTR_Rename(object):
                 trynext = False
                 
         return idx
+
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) == 2:
+        filename = sys.argv[1]
+        otrfile = OTR_Rename(filename)
+        filename_new = otrfile.buildNewFilename()
+        if filename_new != False:
+            print filename_new
+    else:
+        print 'Usage: ' + sys.argv[0] + ' filename'

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from OTR_Rename import OTR_Rename
+from otr_rename import OTR_Rename
 
 otrfile = OTR_Rename('Die_Simpsons_14.09.15_20-15_pro7_25_TVOON_DE.avi')
 filename_neu = otrfile.buildNewFilename()
