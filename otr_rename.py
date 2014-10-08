@@ -78,7 +78,7 @@ class OTR_Rename(object):
 
     def copy_and_sort(self):
         if not(os.path.isdir(self.show)):
-           os.mkdir(title)
+           os.mkdir(self.show)
        
         log = open('log.txt','a')
         lt = localtime()
