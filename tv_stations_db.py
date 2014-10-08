@@ -2,6 +2,7 @@
 senderlinks = {'pro7' : 'ProSieben',
 			  'rtlnitro' : 'rtl-nitro',
               'pro7max' : 'ProSiebenMaxx', 
+              'pro7maxx' : 'ProSiebenMaxx',
               'rtl' : 'rtl',
               'vox' : 'vox',
               'rtl2' : 'rtl2',

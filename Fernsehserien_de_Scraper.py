@@ -16,6 +16,7 @@ import os
 from tv_shows_db import serieslinks
 from tv_stations_db import senderlinks
 import time
+import codecs
 
 
 class Fernsehserien_de_Scraper(object):
@@ -35,10 +36,10 @@ class Fernsehserien_de_Scraper(object):
             webpage = urlopen(cache)
         else:
             if serieslinks.has_key(self.name):
-                title = serieslinks[self.name.replace(' ','-')]
+                title = serieslinks[self.name]
             else:
                 title = self.name.replace(' ','-')
-                
+
             webpage = urlopen('http://www.fernsehserien.de/'+title+'/episodenguide').read()
             
             if not(os.path.isdir(self.name.replace('-',' '))):
@@ -111,8 +112,8 @@ class Fernsehserien_de_Scraper(object):
         #print len(getTitles(soup))
         
         if printout:
-            for i in range(0,getCountEpisode(soup)):
-                print 'S' + s[i] + '.' + 'E'+ e[i] + ' : ' + t[i] + '( ' + d[i] + ' )'    
+            for i in range(0,self.getCountEpisode()):
+                print 'S' + s[i] + '.' + 'E'+ e[i] + ' : ' + t[i].decode('utf-8') + '( ' + d[i] + ' )'   
 
         return (d,s,e,t)
 
@@ -169,3 +170,46 @@ class Fernsehserien_de_Scraper(object):
                     title.append(m.group(6))
                     
         return (epdate, season, episode, title, eptime)    
+
+
+
+# WINDOWS: DEAL with special chars
+import sys
+""" 
+Deal with Windows Output/ Codecs (see http://stackoverflow.com/questions/5419/python-unicode-and-the-windows-console for more info)
+"""
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+#print sys.getdefaultencoding()
+
+if sys.platform == 'win32':
+    try:
+        import win32console 
+    except:
+        print "Python Win32 Extensions module is required.\n You can download it from https://sourceforge.net/projects/pywin32/ (x86 and x64 builds are available)\n"
+        exit(-1)
+    # win32console implementation  of SetConsoleCP does not return a value
+    # CP_UTF8 = 65001
+    win32console.SetConsoleCP(65001)
+    if (win32console.GetConsoleCP() != 65001):
+        raise Exception ("Cannot set console codepage to 65001 (UTF-8)")
+    win32console.SetConsoleOutputCP(65001)
+    if (win32console.GetConsoleOutputCP() != 65001):
+        raise Exception ("Cannot set console output codepage to 65001 (UTF-8)")
+
+#import sys, codecs
+sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+"""
+//END
+"""
+
+
+
+if __name__ == '__main__':
+    #Print episodeguide
+    if len(sys.argv)>2:
+        seriesname = sys.argv[1]
+        lang = sys.argv[2] #de / us
+        Fernsehserien_de_Scraper(seriesname).getEpisodeGuide(lang = lang, printout = True)
