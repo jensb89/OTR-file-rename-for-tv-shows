@@ -5,7 +5,7 @@ Search for avi files and move them in the right folder
 """
 
 import os
-import move_tv_show
+from otr_rename import OTR_Rename
 
 files = [f for f in os.listdir(".") if f.endswith('.avi')]
 
