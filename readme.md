@@ -56,3 +56,6 @@ Example output:
 2014-1-30 19:51 : input  The_Originals__Dance_Back_From_the_Grave_14.01.28_20-00_uswpix_60_TVOON_DE.avi
 2014-1-30 19:51 : output The Originals/The Originals.S1E12.Dance Back From The Dead.avi
 ````
+
+## Info / Disclaimer
+This project started as a personal project. It is just for educational purposes and private usage without any warranty or liability. 

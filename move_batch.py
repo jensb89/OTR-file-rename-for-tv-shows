@@ -11,7 +11,8 @@ files = [f for f in os.listdir(".") if f.endswith('.avi')]
 
 for filename in files:
     print filename
-    move_tv_show.copysort(filename)
+    tv_show = OTR_Rename(filename)
+    tv_show.copy_and_sort()
 
 
 
