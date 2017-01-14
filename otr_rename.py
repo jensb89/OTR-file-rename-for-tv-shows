@@ -15,6 +15,7 @@ import time
 from shutil import move
 from time import localtime
 import codecs
+from types import *
 
 from Fernsehserien_de_Scraper import Fernsehserien_de_Scraper
 
@@ -28,9 +29,13 @@ class OTR_Rename(object):
         # Get Title, date and so on from filename
         self.extension = os.path.splitext(self.file)[1]
         m = re.search("(.*)_([0-9]{2}\.[0-9]{2}\.[0-9]{2})_([0-9]{2}\-[0-9]{2})_([A-Za-z0-9]+)", self.file)
-        m2=re.search("(.*)_(S[0-9]{2}E[0-9]{2})",m.group(1)) #Search for S01E02 etc in File Name to remove it
-        title = m2.group(1)
+        title = m.group(1)
+        # Check for SxxExx in filename:
+        m2=re.search("(S[0-9]{2}E[0-9]{2})",title)
+        if type(m2) is not NoneType:
+            title = title.split('_'+m2.group(1))[0]
         title = title.split('__')[0] # for US series SeriesName__EpisodeTitle (problems with shows like CSI__NY)
+
         self.show = title.replace("_",' ')
         self.epdate = m.group(2)
         self.eptime = m.group(3)
