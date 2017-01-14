@@ -137,7 +137,7 @@ class Fernsehserien_de_Scraper(object):
                 title = serieslinks[self.name.replace(' ','-')]
             else:
                 title = self.name.replace(' ','-')
-                
+            print 'Loading: http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1'
             webpage = urlopen('http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1').read()
             
             if not(os.path.isdir(self.name)):
@@ -159,16 +159,13 @@ class Fernsehserien_de_Scraper(object):
         epdate, eptime, season, episode, title = [],[],[],[],[]
         
         for index, item in enumerate(tddata):
-            if fmod(index,2) != 0 and index>0:
-                #print item.text
-                m = re.search("(\d{2}\.\d{2}\.\d{4}).*?(\d{2}:\d{2}).*?>(\d{1,3})<.*?>(\d{1,2}).*?>(\d{1,2}).*?>([^<]+)", str(item))
-                if type(m) is not NoneType:            
-                    epdate.append(m.group(1))
-                    eptime.append(m.group(2))
-                    season.append(m.group(4))
-                    episode.append(m.group(5))
-                    title.append(m.group(6))
-                    
+            m = re.search("(\d{2}\.\d{2}\.\d{4}).*?(\d{2}:\d{2}).*?>(\d{1,3})<.*?>(\d{1,2}).*?>(\d{1,2}).*?>([^<]+)", str(item))
+            if type(m) is not NoneType:            
+                epdate.append(m.group(1))
+                eptime.append(m.group(2))
+                season.append(m.group(4))
+                episode.append(m.group(5))
+                title.append(m.group(6))
         return (epdate, season, episode, title, eptime)    
 
 
