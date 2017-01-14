@@ -172,41 +172,6 @@ class Fernsehserien_de_Scraper(object):
         return (epdate, season, episode, title, eptime)    
 
 
-
-# WINDOWS: DEAL with special chars
-import sys
-""" 
-Deal with Windows Output/ Codecs (see http://stackoverflow.com/questions/5419/python-unicode-and-the-windows-console for more info)
-"""
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
-#print sys.getdefaultencoding()
-
-if sys.platform == 'win32':
-    try:
-        import win32console 
-    except:
-        print "Python Win32 Extensions module is required.\n You can download it from https://sourceforge.net/projects/pywin32/ (x86 and x64 builds are available)\n"
-        exit(-1)
-    # win32console implementation  of SetConsoleCP does not return a value
-    # CP_UTF8 = 65001
-    win32console.SetConsoleCP(65001)
-    if (win32console.GetConsoleCP() != 65001):
-        raise Exception ("Cannot set console codepage to 65001 (UTF-8)")
-    win32console.SetConsoleOutputCP(65001)
-    if (win32console.GetConsoleOutputCP() != 65001):
-        raise Exception ("Cannot set console output codepage to 65001 (UTF-8)")
-
-#import sys, codecs
-sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-sys.stderr = codecs.getwriter('utf8')(sys.stderr)
-"""
-//END
-"""
-
-
-
 if __name__ == '__main__':
     #Print episodeguide
     if len(sys.argv)>2:

@@ -18,8 +18,6 @@ import codecs
 
 from Fernsehserien_de_Scraper import Fernsehserien_de_Scraper
 
-#Windows Hook for UTF-8 in console
-codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
 
 class OTR_Rename(object):
     def __init__(self, filename):
