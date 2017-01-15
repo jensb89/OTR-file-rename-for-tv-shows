@@ -25,7 +25,7 @@ $ python otr_rename.py otrkey-filename
 ````
 Example:
 ````
-$ python otr_rename The_Big_Bang_Theory_13.09.02_21-10_pro7_30_TVOON_DE.mpg.otrkey
+$ python otr_rename.py The_Big_Bang_Theory_13.09.02_21-10_pro7_30_TVOON_DE.mpg.otrkey
 > The Big Bang Theory.S1E15.Spoileralarm!.otrkey
 ````
 
@@ -38,6 +38,11 @@ $ python move_batch.py
 
 This will create a new folder for each tv-show and rename the file respectively.
 Also a log.txt file will be created
+
+For a folder somewhere else use:
+````
+$ python move_batch.py /volume1/folder_with_avi_files/
+````
 
 Example output:
 ````
