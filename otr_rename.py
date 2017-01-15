@@ -16,13 +16,19 @@ from shutil import move
 from time import localtime
 import codecs
 from types import *
+import logging
 
 from Fernsehserien_de_Scraper import Fernsehserien_de_Scraper
+
+# create logger
+logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 
 
 class OTR_Rename(object):
     def __init__(self, filename):
-        self.file = filename
+        path,file = os.path.split(filename)
+        self.file = file
+        self.path = path
         self.parseFileInfo()
 
     def parseFileInfo(self):
@@ -44,7 +50,7 @@ class OTR_Rename(object):
             self.lang='de'
         else:
             self.lang='us'
-        print self.show + ' (' + self.lang + ')'
+        logging.info(self.show + ' (' + self.lang + ') : ' + self.epdate + ' ' + self.eptime)
 
     def queryEpisodeInfo(self):
         self.scraper = Fernsehserien_de_Scraper(self.show)
@@ -81,8 +87,8 @@ class OTR_Rename(object):
         return newfilename
 
     def copy_and_sort(self):
-        if not(os.path.isdir(self.show)):
-           os.mkdir(self.show)
+        if not(os.path.isdir(os.path.join(self.path,self.show))):
+           os.mkdir(os.path.join(self.path,self.show))
        
         log = open('log.txt','a')
         lt = localtime()
@@ -94,16 +100,18 @@ class OTR_Rename(object):
         newfilename = self.buildNewFilename()
         if newfilename != False:
             newfilename = "".join(i for i in newfilename if i not in r'\/:*?"<>|') 
-            newpath = self.show + '/' + newfilename
+            newpath = os.path.join(self.path,self.show + '/' + newfilename)
+
+            if not(os.path.isfile(newpath)):
+                move(os.path.join(self.path,self.file), newpath)
+                log.write(str(jahr)+'-'+ str(monat) +'-'+ str(tag) +' '+ str(stunde) +':'+ str(minute) +' : ')
+                log.write("output " + newpath + "\n\n")
+                logging.info('File' self.file + ' moved to: \n' + newpath +'\n')  
+            else:
+                logging.info('File exists already in the target directory \n    ==> Skip file') 
         else:
-            newpath = self.show + '/' + self.file
-        
-        if not(os.path.isfile(newpath)):
-            move(self.file, newpath)
-            log.write(str(jahr)+'-'+ str(monat) +'-'+ str(tag) +' '+ str(stunde) +':'+ str(minute) +' : ')
-            log.write("output " + newpath + "\n\n")
-            print self.file + ' moved to ' + newpath
-            #log.write(filename + ' was copied to ' + newpath + '\n')       
+            logging.info('No match found \n   ==> skip file') 
+            newpath = os.path.join(self.path,self.file) 
         
         log.close()
 
@@ -155,5 +163,7 @@ if __name__ == '__main__':
         filename_new = otrfile.buildNewFilename()
         if filename_new != False:
             print filename_new
+        else:
+            print 'No episode data found.'
     else:
         print 'Usage: ' + sys.argv[0] + ' filename'

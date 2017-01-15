@@ -17,6 +17,9 @@ from tv_shows_db import serieslinks
 from tv_stations_db import senderlinks
 import time
 import codecs
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 
 
 class Fernsehserien_de_Scraper(object):
@@ -29,10 +32,10 @@ class Fernsehserien_de_Scraper(object):
 
     ######  DOWNLOADING WEBPAGE : Fernsehserien - EpisodeGuide ########
     def downloadWebpage(self):
-        print 'Trying to get website information...please wait...'
+        logging.info('Trying to get website information...please wait...')
         cache = Fernsehserien_de_Scraper.CACHE_FOLDER + '/' + self.name + '_' + 'eplist.dat'
         if os.path.isfile(cache) and (time.time() - os.path.getmtime(cache)) < 43200:
-            print "Use local file..."        
+            logging.info('Use local file...')       
             webpage = urlopen(cache)
         else:
             if serieslinks.has_key(self.name):
@@ -41,18 +44,16 @@ class Fernsehserien_de_Scraper(object):
                 title = self.name.replace(' ','-')
 
             webpage = urlopen('http://www.fernsehserien.de/'+title+'/episodenguide').read()
-            
-            if not(os.path.isdir(self.name.replace('-',' '))):
-                os.mkdir(self.name.replace('-',' '))
 
             if not(os.path.isdir(Fernsehserien_de_Scraper.CACHE_FOLDER)):
                 os.mkdir(Fernsehserien_de_Scraper.CACHE_FOLDER)
+
+            logging.info('Website scraping => done')
                 
             f = open(cache,'w')
             f.write(webpage)
             f.close()
             
-        print 'Website successfully scraped'
         self.soupobj = BeautifulSoup(webpage, "html.parser")
         #print self.soupobj.prettify()
     
@@ -120,24 +121,24 @@ class Fernsehserien_de_Scraper(object):
 
     ######  DOWNLOADING WEBPAGE : Fernsehserien - TimeTable ########
     def getTimeTable(self, sender):
-        print 'Trying to get timetable information...please wait...'
+        logging.info('Trying to get timetable information...please wait...')
                       
         if senderlinks.has_key(sender):
             senderlink = senderlinks[sender]
         else:
-            print 'Link zu Sender ' + sender +' nicht gefunden'
+            logging.warning('Link zu Sender ' + sender +' nicht gefunden')
             return 0
         
         cache = Fernsehserien_de_Scraper.CACHE_FOLDER + '/' + self.name + '_ttlist.dat'
         if os.path.isfile(cache) and (time.time() - os.path.getmtime(cache)) < 43200:
-            print "Use local file..."        
+            logging.info("Using recent cache file...")        
             webpage = urlopen(cache)
         else:
             if serieslinks.has_key(self.name.replace(' ','-')):
                 title = serieslinks[self.name.replace(' ','-')]
             else:
                 title = self.name.replace(' ','-')
-            print 'Loading: http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1'
+            logging.info('Loading: http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1')
             webpage = urlopen('http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1').read()
             
             if not(os.path.isdir(self.name)):
@@ -149,9 +150,10 @@ class Fernsehserien_de_Scraper(object):
             f = open(cache,'w')
             f.write(webpage)
             f.close()   
+
+            logging.info('Website scraping => done')
             
         
-        print 'Website successfully scraped'
         #soup = BeautifulSoup(fernsehserien_testdata.gethtmlo(), "html.parser")
         soup = BeautifulSoup(webpage, "html.parser")
         tddata = soup.select("tr")
