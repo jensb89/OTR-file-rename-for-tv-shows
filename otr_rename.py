@@ -106,7 +106,7 @@ class OTR_Rename(object):
                 move(os.path.join(self.path,self.file), newpath)
                 log.write(str(jahr)+'-'+ str(monat) +'-'+ str(tag) +' '+ str(stunde) +':'+ str(minute) +' : ')
                 log.write("output " + newpath + "\n\n")
-                logging.info('File' self.file + ' moved to: \n' + newpath +'\n')  
+                logging.info(self.file + ' moved to: \n' + newpath +'\n')  
             else:
                 logging.info('File exists already in the target directory \n    ==> Skip file') 
         else:
