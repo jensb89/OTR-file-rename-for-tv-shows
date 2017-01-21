@@ -141,8 +141,6 @@ class Fernsehserien_de_Scraper(object):
             logging.info('Loading: http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1')
             webpage = urlopen('http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1').read()
             
-            if not(os.path.isdir(self.name)):
-                os.mkdir(self.name)
 
             if not(os.path.isdir(Fernsehserien_de_Scraper.CACHE_FOLDER)):
                 os.mkdir(Fernsehserien_de_Scraper.CACHE_FOLDER)
