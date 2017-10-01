@@ -17,6 +17,7 @@ from time import localtime
 import codecs
 from types import *
 import logging
+import sys
 
 from Fernsehserien_de_Scraper import Fernsehserien_de_Scraper
 
@@ -101,6 +102,8 @@ class OTR_Rename(object):
         if newfilename != False:
             newfilename = "".join(i for i in newfilename if i not in r'\/:*?"<>|') 
             newpath = os.path.join(self.path,self.show + '/' + newfilename)
+            logging.debug('Encoding ist %s' %  sys.stdin.encoding)
+            newpath = u''.join(newpath).encode('utf-8').strip()
 
             if not(os.path.isfile(newpath)):
                 move(os.path.join(self.path,self.file), newpath)
@@ -118,8 +121,9 @@ class OTR_Rename(object):
 
     @staticmethod
     def searchDate(date, date_list): 
-        date=datetime.strptime(date,"%y.%m.%d")
+        date=datetime.strptime(date.strip(),"%y.%m.%d")
         for index, item in enumerate(date_list):
+            item = item.strip() #remove potential white spaces
             if item != u'\xa0' and item != '':
                 actualdate = datetime.strptime(item,"%d.%m.%Y")
                 if actualdate.date() == date.date():
