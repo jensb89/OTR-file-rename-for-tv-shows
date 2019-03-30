@@ -68,8 +68,9 @@ class Fernsehserien_de_Scraper(object):
         
 
     def getTitles(self):
-        episodetitles = self.soupobj.select("td.episodenliste-originaltitel")
-        return [x.text for x in episodetitles]
+        episodeLine = self.soupobj.select("tr.ep-hover")
+        episodetitles = [episodeLine[i].find_all("td")[8].text.replace('.','') for i in range(0,len(episodeLine))]
+        return episodetitles
         
         
     def getDate(self):
@@ -87,14 +88,14 @@ class Fernsehserien_de_Scraper(object):
         
         
     def getSeasonNumber(self):
-        episodenumber = self.soupobj.select("td.episodenliste-episodennummer span")
-        return [episodenumber[2*i].text.replace('.','') for i in range(0,len(episodenumber)/2)]
-        
+        episodeLine = self.soupobj.select("tr.ep-hover")
+        seasonNumbers = [episodeLine[i].find_all("td")[3].text.replace('.','') for i in range(0,len(episodeLine))]
+        return seasonNumbers
 
     def getEpisodeNumber(self):
-        episodenumber = self.soupobj.select("td.episodenliste-episodennummer span")
-        return [episodenumber[2*i+1].text.replace('.','') for i in range(0,len(episodenumber)/2)]
-        
+        episodeLine = self.soupobj.select("tr.ep-hover")
+        episodeNumbers = [episodeLine[i].find_all("td")[4].text.replace('.','') for i in range(0,len(episodeLine))]
+        return episodeNumbers
 
     def getCountEpisode(self):
         return len(self.soupobj.select('td.episodenliste-originaltitel'))
@@ -111,7 +112,6 @@ class Fernsehserien_de_Scraper(object):
             d, t = self.getDate(), self.getTitles()
 
         #print len(getTitles(soup))
-        
         if printout:
             for i in range(0,self.getCountEpisode()):
                 print 'S' + s[i] + '.' + 'E'+ e[i] + ' : ' + t[i].decode('utf-8') + '( ' + d[i] + ' )'   
@@ -171,6 +171,7 @@ class Fernsehserien_de_Scraper(object):
 
 if __name__ == '__main__':
     #Print episodeguide
+    import sys
     if len(sys.argv)>2:
         seriesname = sys.argv[1]
         lang = sys.argv[2] #de / us
