@@ -30,6 +30,7 @@ class OTR_Rename(object):
         path,file = os.path.split(filename)
         self.file = file
         self.path = path
+        self.logger = logging.getLogger('pyOTR.OtrRename')
         self.parseFileInfo()
 
     def parseFileInfo(self):
@@ -51,7 +52,7 @@ class OTR_Rename(object):
             self.lang='de'
         else:
             self.lang='us'
-        logging.info(self.show + ' (' + self.lang + ') : ' + self.epdate + ' ' + self.eptime)
+        self.logger.info(self.show + ' (' + self.lang + ') : ' + self.epdate + ' ' + self.eptime)
 
     def queryEpisodeInfo(self):
         self.scraper = Fernsehserien_de_Scraper(self.show)
@@ -109,11 +110,11 @@ class OTR_Rename(object):
                 move(os.path.join(self.path,self.file), newpath)
                 log.write(str(jahr)+'-'+ str(monat) +'-'+ str(tag) +' '+ str(stunde) +':'+ str(minute) +' : ')
                 log.write("output " + newpath + "\n\n")
-                logging.info(self.file + ' moved to: \n' + newpath +'\n')  
+                self.logger.info(self.file + ' moved to: \n' + newpath +'\n')  
             else:
-                logging.info('File exists already in the target directory \n    ==> Skip file') 
+                self.logger.info('File exists already in the target directory \n    ==> Skip file') 
         else:
-            logging.info('No match found \n   ==> skip file') 
+            self.logger.info('No match found \n   ==> skip file') 
             newpath = os.path.join(self.path,self.file) 
         
         log.close()
