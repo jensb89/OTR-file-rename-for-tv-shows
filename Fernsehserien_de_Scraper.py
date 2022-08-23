@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from urllib import urlopen
 from math import fmod
 import re
-from types import * 
+from types import *
 import os
 from tv_shows_db import serieslinks
 from tv_stations_db import senderlinks
@@ -35,7 +35,7 @@ class Fernsehserien_de_Scraper(object):
         logging.info('Trying to get website information...please wait...')
         cache = Fernsehserien_de_Scraper.CACHE_FOLDER + '/' + self.name + '_' + 'eplist.dat'
         if os.path.isfile(cache) and (time.time() - os.path.getmtime(cache)) < 43200:
-            logging.info('Use local file...')       
+            logging.info('Use local file...')
             webpage = urlopen(cache)
         else:
             if serieslinks.has_key(self.name):
@@ -49,44 +49,44 @@ class Fernsehserien_de_Scraper(object):
                 os.mkdir(Fernsehserien_de_Scraper.CACHE_FOLDER)
 
             logging.info('Website scraping => done')
-                
+
             f = open(cache,'w')
             f.write(webpage)
             f.close()
-            
+
         self.soupobj = BeautifulSoup(webpage, "html.parser")
         #print self.soupobj.prettify()
-    
+
 
     def getTitlesGerman(self):
         episodetitlesger = self.soupobj.select("td.episodenliste-titel")
         for i in episodetitlesger:
             if type(i.find('span')) is not NoneType:
                 i.find('span').decompose()
-            
+
         return [x.text for x in episodetitlesger]
-        
+
 
     def getTitles(self):
         episodeLine = self.soupobj.select("tr.ep-hover")
         episodetitles = [episodeLine[i].find_all("td")[8].text.replace('.','') for i in range(0,len(episodeLine))]
         return episodetitles
-        
-        
+
+
     def getDate(self):
         episodedate = self.soupobj.select("td.episodenliste-oea")
         return [x.text.rstrip('\r\n') for x in episodedate]
-        
-        
+
+
     def getDateGerman(self):
         episodedate = self.soupobj.select("td.episodenliste-ea")
         for i in episodedate:
             if type(i.find('span')) is not NoneType:
                 i.find('span').decompose()
-        
+
         return [x.text for x in episodedate]
-        
-        
+
+
     def getSeasonNumber(self):
         episodeLine = self.soupobj.select("tr.ep-hover")
         seasonNumbers = [episodeLine[i].find_all("td")[3].text.replace('.','') for i in range(0,len(episodeLine))]
@@ -99,8 +99,8 @@ class Fernsehserien_de_Scraper(object):
 
     def getCountEpisode(self):
         return len(self.soupobj.select('td.episodenliste-originaltitel'))
-        
-        
+
+
     def getEpisodeGuide(self, lang = 'de', printout = False):
         self.downloadWebpage()
         s = self.getSeasonNumber()
@@ -114,7 +114,7 @@ class Fernsehserien_de_Scraper(object):
         #print len(getTitles(soup))
         if printout:
             for i in range(0,self.getCountEpisode()):
-                print 'S' + s[i] + '.' + 'E'+ e[i] + ' : ' + t[i].decode('utf-8') + '( ' + d[i] + ' )'   
+                print 'S' + s[i] + '.' + 'E'+ e[i] + ' : ' + t[i].decode('utf-8') + '( ' + d[i] + ' )'
 
         return (d,s,e,t)
 
@@ -122,16 +122,16 @@ class Fernsehserien_de_Scraper(object):
     ######  DOWNLOADING WEBPAGE : Fernsehserien - TimeTable ########
     def getTimeTable(self, sender):
         logging.info('Trying to get timetable information...please wait...')
-                      
+
         if senderlinks.has_key(sender):
             senderlink = senderlinks[sender]
         else:
             logging.warning('Link zu Sender ' + sender +' nicht gefunden')
             return 0
-        
+
         cache = Fernsehserien_de_Scraper.CACHE_FOLDER + '/' + self.name + '_ttlist.dat'
         if os.path.isfile(cache) and (time.time() - os.path.getmtime(cache)) < 43200:
-            logging.info("Using recent cache file...")        
+            logging.info("Using recent cache file...")
             webpage = urlopen(cache)
         else:
             if serieslinks.has_key(self.name.replace(' ','-')):
@@ -140,33 +140,35 @@ class Fernsehserien_de_Scraper(object):
                 title = self.name.replace(' ','-')
             logging.info('Loading: http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1')
             webpage = urlopen('http://www.fernsehserien.de/'+title+'/sendetermine/'+senderlink+'/-1').read()
-            
+
 
             if not(os.path.isdir(Fernsehserien_de_Scraper.CACHE_FOLDER)):
                 os.mkdir(Fernsehserien_de_Scraper.CACHE_FOLDER)
-                
+
             f = open(cache,'w')
             f.write(webpage)
-            f.close()   
+            f.close()
 
             logging.info('Website scraping => done')
-            
-        
+
+
         #soup = BeautifulSoup(fernsehserien_testdata.gethtmlo(), "html.parser")
         soup = BeautifulSoup(webpage, "html.parser")
-        tddata = soup.select("tr")
+        tddata = soup.select('div[itemtype="http://schema.org/BroadcastEvent"]')
 
         epdate, eptime, season, episode, title = [],[],[],[],[]
-        
+
         for index, item in enumerate(tddata):
-            m = re.search("(\d{2}\.\d{2}\.\d{4}).*?(\d{2}:\d{2}).*?>(\d{1,3})<.*?>(\d{1,2}).*?>(\d{1,2}).*?>([^<]+)", str(item))
-            if type(m) is not NoneType:            
-                epdate.append(m.group(1))
-                eptime.append(m.group(2))
-                season.append(m.group(4))
-                episode.append(m.group(5))
-                title.append(m.group(6))
-        return (epdate, season, episode, title, eptime)    
+            epdate.append(item.select(".sendetermine-2019-datum")[0].get_text())
+            season_and_episode = item.select(".sendetermine-2019-staffel-und-episode")[0].get_text()
+            m = re.search("(\d{1,2})\.(\d{1,2})", season_and_episode)
+            season.append(m.group(1))
+            episode.append(m.group(2))
+            title.append(item.select(".sendetermine-2019-episodentitel")[0].get_text())
+            start_and_endtime = item.select(".sendetermine-2019-uhrzeit")[0].get_text()
+            m = re.search("(\d{1,2}:\d{1,2})", start_and_endtime)
+            eptime.append(m.group(1))
+        return (epdate, season, episode, title, eptime)
 
 
 if __name__ == '__main__':
